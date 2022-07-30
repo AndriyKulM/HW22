@@ -136,6 +136,10 @@ def invite(user, event_id):
 @token_required
 def respond_to_invitation(user, event_id):
     data = request.get_json()
+
+    if data["invitation_status"] not in ["accepted", "declined"]:
+        data["invitation_status"] = "pending"
+        
     respond_schema = EventRespondSerializer()
     event_data = UserEvent.query.filter_by(user_id=user.id, event_id=event_id).first()
     respond_data = respond_schema.load(data)
